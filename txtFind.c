@@ -13,6 +13,7 @@ char upCase(char c) {
 }
 
 void Gematria(char *word, char *text) {
+    printf("Gematria Sequences:");
     int lenWord = strlen(word);
     int geomWord = 0;
     for (int i = 0; i < lenWord; i++) {
@@ -42,11 +43,10 @@ void Gematria(char *word, char *text) {
             memset(sequence, 0, lenText); //reset
             seqPtr = 0;
             continue;
-        }
-        else if(geomWord<counter){
+        } else if (geomWord < counter) {
             sequence[seqPtr] = *(text + j);
             seqPtr += 1;
-        } else{
+        } else {
             memset(sequence, 0, lenText); //reset
             seqPtr = 0;
             continue;
@@ -56,13 +56,56 @@ void Gematria(char *word, char *text) {
 
 }
 
-void Atbash(char *word, char *text) {
+//transfer to atbash
+char trans(char c) {
+    if (c >= 'a' && c <= 'z') { //little letter
+        int a = c - 'a';
+        int b = 'z' - a;
+        c = b;
+        return c;
+    } else {
+        int a = c - 'A';
+        int b = 'Z' - a;
+        c = b;
+        return c;
+    }
+}
 
+int AtbashHelper(char word[], char text[], int n) {
+    int seqPtr = 0; //"pointer" on the seq
+    char sequence[n + 1];
+    memset(sequence, 0, n);
+    for (int i = 0; i < n; i++) {
+        if (word[i] == text[i] || word[i] == trans(word[i])) {
+            sequence[seqPtr] = text[i];
+            seqPtr += 1;
+            continue;
+        } else if (text[i] == ' ') {
+            continue; //ignore blank space
+        } else if (seqPtr == n) {
+            sequence[n + 1] = '~';
+            puts(sequence); //print the seq
+            return 0;
+        }
+    }
+    return 0;
+
+}
+
+void Atbash(char *word, char *text) {
+    printf("Atbash Sequences:");
+    int len1 = strlen(word), len2 = strlen(text);
+    char sequence[len2 - len1 + 1];
+    int seqPtr = 0; //"pointer" on the seq
+
+    for (int i = 0; i <= len2 - len1; i++) {
+        AtbashHelper(word, text, len1);
+    }
 
 }
 
 void Anagram(char *word, char *text) {
-
+    printf("Anagram Sequences:");
 
 }
 
