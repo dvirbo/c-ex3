@@ -110,7 +110,7 @@ void Atbash(char *word, char *text) {
 //check the appearance  of the chars
 int checkAn(char *currString, char *wordPtr) {
     int appearance[127];
-    memset(appearance, 0, 127);
+    memset(appearance, 0, sizeof(appearance));
     int loc;
     for (int i = 0; currString[i] != '\0'; i++) {
         if (currString[i] != ' ') {
