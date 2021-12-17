@@ -5,7 +5,7 @@
 #define WORD 30
 
 
-char upCase(char c) {
+char upCase(char c) { //return the assci val
     if (c >= 'a' && c <= 'z') {
         return c - 'a' + 'A';
     }
@@ -16,7 +16,7 @@ void Gematria(char *word, char *text) {
     printf("Gematria Sequences:");
     int lenWord = strlen(word);
     int geomWord = 0;
-    for (int i = 0; i < lenWord; i++) {
+    for (int i = 0; i < lenWord; i++) { //calc the geom pf the word
         int tst = upCase(word[i]) - 'A' + 1;
         if (tst < 0 || tst > 27) { //not valid..
             continue;
@@ -46,7 +46,7 @@ void Gematria(char *word, char *text) {
         } else if (geomWord < counter) {
             sequence[seqPtr] = *(text + j);
             seqPtr += 1;
-        } else {
+        } else { // geomWord > counter.. reset
             memset(sequence, 0, lenText); //reset
             seqPtr = 0;
             continue;
@@ -71,43 +71,105 @@ char trans(char c) {
     }
 }
 
-int AtbashHelper(char word[], char text[], int n) {
+int AtbashHelper(char word[], char text[], int lenT, int lenW) {
     int seqPtr = 0; //"pointer" on the seq
-    char sequence[n + 1];
-    memset(sequence, 0, n);
-    for (int i = 0; i < n; i++) {
+    int counter = 0; // how many words we saw
+    int i = 0; //
+    char sequence[lenT];
+    memset(sequence, 0, lenT);
+
+    while (counter != lenW) {
         if (word[i] == text[i] || word[i] == trans(word[i])) {
             sequence[seqPtr] = text[i];
+            i += 1; // i are pointer on the text
+            seqPtr += 1;
+            counter += 1; //how many words we saw
+            continue;
+        } else if (text[i] == ' ') { //add the blank space to the sequence
+            sequence[seqPtr] = text[i];
+            i += 1; // i are pointer on the text
             seqPtr += 1;
             continue;
-        } else if (text[i] == ' ') {
-            continue; //ignore blank space
-        } else if (seqPtr == n) {
-            sequence[n + 1] = '~';
-            puts(sequence); //print the seq
+        } else if (word[i] != text[i] || word[i] != trans(word[i])) {
             return 0;
         }
     }
+    sequence[seqPtr] = '~';
+    puts(sequence); //print the seq
     return 0;
-
 }
 
 void Atbash(char *word, char *text) {
     printf("Atbash Sequences:");
-    int len1 = strlen(word), len2 = strlen(text);
-    char sequence[len2 - len1 + 1];
-    int seqPtr = 0; //"pointer" on the seq
-
-    for (int i = 0; i <= len2 - len1; i++) {
-        AtbashHelper(word, text, len1);
+    int lenW = strlen(word), lenT = strlen(text);
+    for (int i = 0; i <= lenT - lenW; i++) {
+        AtbashHelper(word, text, lenT, lenW);
     }
-
 }
 
-void Anagram(char *word, char *text) {
-    printf("Anagram Sequences:");
-
+//check the appearance  of the chars
+int checkAn(char *currString, char *wordPtr) {
+    int appearance[127];
+    memset(appearance, 0, 127);
+    int loc;
+    for (int i = 0; currString[i] != '\0'; i++) {
+        if (currString[i] != ' ') {
+            loc = (int)*(currString + i);
+            appearance[loc] += 1;
+        }
+        if (wordPtr[i] != ' ' && strlen(wordPtr) > i) {
+            loc = (int) *(wordPtr + i);
+            appearance[loc] -= 1;
+        }
+    }
+    for (int i = 0; i < 127; i++) {
+        if (appearance[i] != 0) {
+            return 0;
+        }
+    }
+    return 1;
 }
+
+void Anagram(char word[], char text[]) {
+    char *wordPtr; //pointer to the word
+    char *textEPtr; //pointer to the end of the text
+    char *textSPtr = text; //pointer to the start of the text
+    char ans[TXT] = "";
+
+    while (*textSPtr) {
+        char currString[TXT] = "";
+        int count = 0;
+        textEPtr = textSPtr; //init end pointer text
+        wordPtr = word;  // init pointer to the word
+        while (count < strlen(wordPtr)) { //while we didn't get to substring that equals to the word
+            if (*textEPtr == ' ' && !strlen(currString)) {
+                break;
+            } else if (*textEPtr != ' ') {
+                count++;
+            }
+            strncat(currString, textEPtr, 1); //appended only one char
+            textEPtr++;
+
+            if (strlen(wordPtr) == count) {
+                if (checkAn(currString, wordPtr)) {
+                    strcat(ans, currString);
+                    ans[strlen(ans)] = '~';
+                    count = 0;
+                }
+            }
+
+        }
+        textSPtr++;
+    }
+    int size = strlen(ans);
+    ans[size - 1] = '\0';
+    printf("Anagram Sequences: %s", ans);
+}
+
+
+
+
+
 
 
 
