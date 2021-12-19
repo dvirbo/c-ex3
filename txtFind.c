@@ -215,7 +215,6 @@ char trans(char c) // transfer to atbash
         return c;
 }
 
-
 void toReverse(char reverse[], int wordLen) // reverse the word
 {
     int i = 0, k = 0;
@@ -253,7 +252,7 @@ void Atbash(char word[], char text[])
     int tilda = 0; // when to print ~
     int wordLen = strlen(word);
     int textLen = strlen(text);
-//atbashWord
+    // atbashWord
     char atbashWord[WORD];
     strcpy(atbashWord, word);
     toAtbash(atbashWord, wordLen);
@@ -293,6 +292,7 @@ void Atbash(char word[], char text[])
                 { // check if the char not include in the abc..
                     sub[subPtr] = temp;
                     subPtr++;
+                    n++;
                     j--;
                     continue;
                 }
@@ -324,9 +324,9 @@ void Atbash(char word[], char text[])
                     printf("%s", sub);
                     tilda = 1;
                     break;
-                }//*
+                } //*
                 temp = text[i + n];
-                if (geometVal(temp) == 0) //if the next val isn't word- add
+                if (geometVal(temp) == 0) // if the next val isn't word- add
                 {
                     sub[subPtr] = temp;
                     subPtr++;
@@ -350,22 +350,22 @@ void Atbash(char word[], char text[])
 }
 
 // check the appearance  of the chars
-int checkAn(char *currString, char *wordPtr)
+int checkAn(char currString[], char word[])
 {
     int appearance[127];
     memset(appearance, 0, sizeof(appearance));
-    int loc;
+//    int loc;
     for (int i = 0; currString[i] != '\0'; i++)
     {
         if (currString[i] != ' ')
         {
-            loc = (int)*(currString + i);
-            appearance[loc] += 1;
+       //     loc = (int)(currString + i);
+            appearance[(int)*(currString + i)] += 1;
         }
-        if (wordPtr[i] != ' ' && strlen(wordPtr) > i)
+        if (word[i] != ' ' && strlen(word) > i)
         {
-            loc = (int)*(wordPtr + i);
-            appearance[loc] -= 1;
+          //  loc = (int)(word + i);
+            appearance[(int)*(word + i)] -= 1;
         }
     }
     for (int i = 0; i < 127; i++)
@@ -378,45 +378,41 @@ int checkAn(char *currString, char *wordPtr)
     return 1;
 }
 
-void Anagram(char word[], char text[])
-{
-    char *wordPtr;         // pointer to the word
-    char *textEPtr;        // pointer to the end of the text
-    char *textSPtr = text; // pointer to the start of the text
-    char ans[TXT] = "";
+void Anagram(char word[], char text[]){
+     printf("Anagram Sequences: ");
+    int textlen = strlen(text);
+    char sub[textlen];
+    strcpy(sub,text);
 
-    while (*textSPtr)
+    int s =0,subLen=strlen(sub),tilda = 0;
+    for (int i = 0; i < textlen; i++)
     {
-        char currString[TXT] = "";
-        int count = 0;
-        textEPtr = textSPtr; // init end pointer text
-        wordPtr = word;      // init pointer to the word
-        while (count < strlen(wordPtr))
-        { // while we didn't get to substring that equals to the word
-            if (*textEPtr == ' ' && !strlen(currString))
+        s=0;
+        char temp[textlen];
+        for (int g = 0; g < textlen ; g++)
+        {
+            temp[g] = 0;
+        }
+        for (int j = 0; j < strlen(sub); j++)
+        {
+            if(sub[0]!=' '&& sub[0]!='\n'&&sub[0]!='\t'){
+            char f;
+            f = sub[j];
+            temp[s++] = f;
+            if (checkAn(word,temp)==1) 
             {
+                if(tilda != 0)
+                    printf("~%s",temp);
+                else
+                {
+                    tilda = 1;
+                    printf("%s",temp);
+                }
                 break;
             }
-            else if (*textEPtr != ' ')
-            {
-                count++;
             }
-            strncat(currString, textEPtr, 1); // appended only one char
-            textEPtr++;
-
-            if (strlen(wordPtr) == count)
-            {
-                if (checkAn(currString, wordPtr))
-                {
-                    strcat(ans, currString);
-                    ans[strlen(ans)] = '~';
-                    count = 0;
-                }
-            }
-        }
-        textSPtr++;
+        }   
+        memmove(&sub[0],&sub[1],strlen(sub));
+    
     }
-    int size = strlen(ans);
-    ans[size - 1] = '\0';
-    printf("Anagram Sequences: %s", ans);
 }
