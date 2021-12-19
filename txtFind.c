@@ -354,17 +354,17 @@ int checkAn(char currString[], char word[])
 {
     int appearance[127];
     memset(appearance, 0, sizeof(appearance));
-        int loc;
+    int loc;
     for (int i = 0; currString[i] != '\0'; i++)
     {
         if (currString[i] != ' ')
         {
-                 loc = (int)*(currString + i);
-            appearance[loc] ++;
+            loc = (int)*(currString + i);
+            appearance[loc]++;
         }
         if (word[i] != ' ' && strlen(word) > i)
         {
-              loc = (int)*(word + i);
+            loc = (int)*(word + i);
             appearance[loc]--;
         }
     }
@@ -388,12 +388,10 @@ void Anagram(char word[], char text[])
     int tilda = 0;
     for (int i = 0; i < textlen; i++)
     {
-        int pSub = 0;
+        int pSub = 0; //curr of the substring
         char sub[textlen];
-        for (int t = 0; t < textlen; t++)
-        {
-            sub[t] = 0;
-        }
+        memset(sub, 0, textlen);
+
         for (int j = 0; j < strlen(copy); j++)
         {
             if (copy[0] != ' ')
@@ -413,7 +411,7 @@ void Anagram(char word[], char text[])
                     break;
                 }
             }
-        }
+        }//      dest     src
         memmove(&copy[0], &copy[1], strlen(copy));
     }
 }
