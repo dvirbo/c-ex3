@@ -4,160 +4,415 @@
 #define TXT 1024
 #define WORD 30
 
-
-char upCase(char c) { //return the assci val
-    if (c >= 'a' && c <= 'z') {
-        return c - 'a' + 'A';
+int geometVal(char c)
+{ // convert to Gematria value
+    if (c == 'A' || c == 'a')
+    {
+        return 1;
     }
-    return c;
+    else if (c == 'B' || c == 'b')
+    {
+        return 2;
+    }
+    else if (c == 'C' || c == 'c')
+    {
+        return 3;
+    }
+    else if (c == 'D' || c == 'd')
+    {
+        return 4;
+    }
+    else if (c == 'E' || c == 'e')
+    {
+        return 5;
+    }
+    else if (c == 'F' || c == 'f')
+    {
+        return 6;
+    }
+    else if (c == 'G' || c == 'g')
+    {
+        return 7;
+    }
+    else if (c == 'H' || c == 'h')
+    {
+        return 8;
+    }
+    else if (c == 'I' || c == 'i')
+    {
+        return 9;
+    }
+    else if (c == 'J' || c == 'j')
+    {
+        return 10;
+    }
+    else if (c == 'K' || c == 'k')
+    {
+        return 11;
+    }
+    else if (c == 'L' || c == 'l')
+    {
+        return 12;
+    }
+    else if (c == 'M' || c == 'm')
+    {
+        return 13;
+    }
+    else if (c == 'N' || c == 'n')
+    {
+        return 14;
+    }
+    else if (c == 'O' || c == 'o')
+    {
+        return 15;
+    }
+    else if (c == 'P' || c == 'p')
+    {
+        return 16;
+    }
+    else if (c == 'Q' || c == 'q')
+    {
+        return 17;
+    }
+    else if (c == 'R' || c == 'r')
+    {
+        return 18;
+    }
+    else if (c == 'S' || c == 's')
+    {
+        return 19;
+    }
+    else if (c == 'T' || c == 't')
+    {
+        return 20;
+    }
+    else if (c == 'U' || c == 'u')
+    {
+        return 21;
+    }
+    else if (c == 'V' || c == 'v')
+    {
+        return 22;
+    }
+    else if (c == 'W' || c == 'w')
+    {
+        return 23;
+    }
+    else if (c == 'X' || c == 'x')
+    {
+        return 24;
+    }
+    else if (c == 'Y' || c == 'y')
+    {
+        return 25;
+    }
+    else if (c == 'Z' || c == 'z')
+    {
+        return 26;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-void Gematria(char *word, char *text) {
-    printf("Gematria Sequences:");
-    int lenWord = strlen(word);
+void Gematria(char word[], char text[])
+{
+    printf("Gematria Sequences: ");
+    int tilda = 0; // when to print ~
     int geomWord = 0;
-    for (int i = 0; i < lenWord; i++) { //calc the geom pf the word
-        int tst = upCase(word[i]) - 'A' + 1;
-        if (tst < 0 || tst > 27) { //not valid..
-            continue;
-        }
-        geomWord += tst;
+    int i = 0;
+    char c = word[i];
+    while (c != '\0')
+    {
+        c = word[i];
+        geomWord = geomWord + geometVal(c);
+        i++;
     }
-    int counter = 0;
-    int lenText = strlen(text);
-    char sequence[lenText];
-    int seqPtr = 0; //"pointer" on the seq
-    memset(sequence, 0, lenText);
-    for (int j = 0; j < lenText; j++) {
-        int tst = upCase(text[j]) - 'A' + 1;
-        if (tst < 0 || tst > 27) { //not valid or blankSpace
-            sequence[seqPtr] = *(text + j); //add the char to the seq
-            seqPtr += 1;
-            continue;
-        }
-        counter += tst;
-        if (counter == geomWord) { //if there is something in the string
-            sequence[seqPtr] = *(text + j);
-            sequence[seqPtr + 1] = '~';
-            puts(sequence); //print the seq
-            memset(sequence, 0, lenText); //reset
-            seqPtr = 0;
-            continue;
-        } else if (geomWord < counter) {
-            sequence[seqPtr] = *(text + j);
-            seqPtr += 1;
-        } else { // geomWord > counter.. reset
-            memset(sequence, 0, lenText); //reset
-            seqPtr = 0;
-            continue;
-        }
+    // int le1nText = strlen(text);
+    for (int i = 0; i < TXT; i++)
+    {
 
+        if (text[i] == '\0')
+        {
+            return;
+        }
+        if (geometVal(text[i]) == 0)
+        {
+            continue;
+        }
+        int check = geomWord - geometVal(text[i]);
+        if (check == 0) // if the curr letter in the text have the save geomtry val like the word
+        {
+            if (tilda)
+            {
+                printf("~");
+            }
+            printf("%c", text[i]);
+            tilda = 1;
+            continue;
+        }
+        else
+        {
+            int next = i + 1;
+            while (check >= 0) // while there is more letters to add until we get the val of the word
+            {
+                if (text[next] == '\0')
+                {
+                    break;
+                }
+                if (check - geometVal(text[next]) < 0)
+                {
+                    break;
+                }
+                else if (check - geometVal(text[next]) == 0)
+                {
+                    if (tilda)
+                    {
+                        printf("~");
+                    }
+
+                    int len = next - i + 1; // length of the substring
+                    char substring[TXT];
+                    int j = 0;
+                    while (j < len)
+                    {
+                        substring[j] = text[i + j];
+                        j++;
+                    }
+                    substring[j] = '\0';
+                    printf("%s", substring);
+                    tilda = 1;
+                    break;
+                }
+                else
+                {
+                    check = check - geometVal(text[next]);
+                    next++;
+                }
+            }
+        }
     }
-
 }
 
-//transfer to atbash
-char trans(char c) {
-    if (c >= 'a' && c <= 'z') { //little letter
+char trans(char c) // transfer to atbash
+{
+    if (c >= 'a' && c <= 'z')
+    { // little letter
         int a = c - 'a';
         int b = 'z' - a;
         c = b;
         return c;
-    } else {
+    }
+    else if (c >= 'A' && c <= 'Z')
+    {
         int a = c - 'A';
         int b = 'Z' - a;
         c = b;
         return c;
     }
+    else
+        return c;
 }
 
-int AtbashHelper(char word[], char text[], int lenT, int lenW) {
-    int seqPtr = 0; //"pointer" on the seq
-    int counter = 0; // how many words we saw
-    int i = 0; //
-    char sequence[lenT];
-    memset(sequence, 0, lenT);
 
-    while (counter != lenW) {
-        if (word[i] == text[i] || word[i] == trans(word[i])) {
-            sequence[seqPtr] = text[i];
-            i += 1; // i are pointer on the text
-            seqPtr += 1;
-            counter += 1; //how many words we saw
-            continue;
-        } else if (text[i] == ' ') { //add the blank space to the sequence
-            sequence[seqPtr] = text[i];
-            i += 1; // i are pointer on the text
-            seqPtr += 1;
-            continue;
-        } else if (word[i] != text[i] || word[i] != trans(word[i])) {
-            return 0;
+void toReverse(char reverse[], int wordLen) // reverse the word
+{
+    int i = 0, k = 0;
+    char tmp[wordLen];
+    while (i < wordLen)
+    {
+        tmp[i] = reverse[i];
+        i++;
+    }
+
+    i = wordLen - 1;
+    while (i >= 0)
+    {
+        reverse[k] = tmp[i];
+        i--;
+        k++;
+    }
+    reverse[wordLen] = '\0';
+}
+
+void toAtbash(char atbashWord[], int wordLen) // change the string to atbash
+{
+    char c;
+    for (int i = 0; i < wordLen; ++i)
+    {
+        c = atbashWord[i];
+        c = trans(c);
+        atbashWord[i] = c;
+    }
+}
+
+void Atbash(char word[], char text[])
+{
+    printf("Atbash Sequences: ");
+    int tilda = 0; // when to print ~
+    int wordLen = strlen(word);
+    int textLen = strlen(text);
+//atbashWord
+    char atbashWord[WORD];
+    strcpy(atbashWord, word);
+    toAtbash(atbashWord, wordLen);
+
+    char reverse[wordLen];
+    strcpy(reverse, atbashWord);
+    toReverse(reverse, wordLen);
+
+    char temp;
+    int subPtr;
+    int j;
+    int n;
+
+    for (int i = 0; i < textLen; i++)
+    {
+        char ptrText = text[i];
+        if (ptrText == atbashWord[0])
+        {
+            char sub[wordLen];
+            sub[0] = atbashWord[0];
+
+            for (j = 1, subPtr = 1, n = 1; j <= textLen; j++, n++)
+            {
+                if (j == wordLen)
+                {
+                    sub[subPtr] = '\0';
+                    if (tilda)
+                    {
+                        printf("~");
+                    }
+                    printf("%s", sub);
+                    tilda = 1;
+                    break;
+                }
+                temp = text[i + n];
+                if (geometVal(temp) == 0)
+                { // check if the char not include in the abc..
+                    sub[subPtr] = temp;
+                    subPtr++;
+                    j--;
+                    continue;
+                }
+                else if (temp == atbashWord[j])
+                {
+                    sub[subPtr] = temp;
+                    subPtr++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        else if (ptrText == reverse[0])
+        {
+            char sub[wordLen];
+            sub[0] = reverse[0];
+            j = 1, subPtr = 1, n = 1;
+            while (j <= wordLen)
+            {
+                if (j == wordLen)
+                {
+                    sub[subPtr] = '\0';
+                    if (tilda)
+                    {
+                        printf("~");
+                    }
+                    printf("%s", sub);
+                    tilda = 1;
+                    break;
+                }//*
+                temp = text[i + n];
+                if (geometVal(temp) == 0) //if the next val isn't word- add
+                {
+                    sub[subPtr] = temp;
+                    subPtr++;
+                    n++;
+                    continue;
+                }
+                else if (temp == reverse[j])
+                {
+                    sub[subPtr] = temp;
+                    subPtr++;
+                    n++;
+                    j++;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
-    sequence[seqPtr] = '~';
-    puts(sequence); //print the seq
-    return 0;
 }
 
-void Atbash(char *word, char *text) {
-    printf("Atbash Sequences:");
-    int lenW = strlen(word), lenT = strlen(text);
-    for (int i = 0; i <= lenT - lenW; i++) {
-        AtbashHelper(word, text, lenT, lenW);
-    }
-}
-
-//check the appearance  of the chars
-int checkAn(char *currString, char *wordPtr) {
+// check the appearance  of the chars
+int checkAn(char *currString, char *wordPtr)
+{
     int appearance[127];
     memset(appearance, 0, sizeof(appearance));
     int loc;
-    for (int i = 0; currString[i] != '\0'; i++) {
-        if (currString[i] != ' ') {
+    for (int i = 0; currString[i] != '\0'; i++)
+    {
+        if (currString[i] != ' ')
+        {
             loc = (int)*(currString + i);
             appearance[loc] += 1;
         }
-        if (wordPtr[i] != ' ' && strlen(wordPtr) > i) {
-            loc = (int) *(wordPtr + i);
+        if (wordPtr[i] != ' ' && strlen(wordPtr) > i)
+        {
+            loc = (int)*(wordPtr + i);
             appearance[loc] -= 1;
         }
     }
-    for (int i = 0; i < 127; i++) {
-        if (appearance[i] != 0) {
+    for (int i = 0; i < 127; i++)
+    {
+        if (appearance[i] != 0)
+        {
             return 0;
         }
     }
     return 1;
 }
 
-void Anagram(char word[], char text[]) {
-    char *wordPtr; //pointer to the word
-    char *textEPtr; //pointer to the end of the text
-    char *textSPtr = text; //pointer to the start of the text
+void Anagram(char word[], char text[])
+{
+    char *wordPtr;         // pointer to the word
+    char *textEPtr;        // pointer to the end of the text
+    char *textSPtr = text; // pointer to the start of the text
     char ans[TXT] = "";
 
-    while (*textSPtr) {
+    while (*textSPtr)
+    {
         char currString[TXT] = "";
         int count = 0;
-        textEPtr = textSPtr; //init end pointer text
-        wordPtr = word;  // init pointer to the word
-        while (count < strlen(wordPtr)) { //while we didn't get to substring that equals to the word
-            if (*textEPtr == ' ' && !strlen(currString)) {
+        textEPtr = textSPtr; // init end pointer text
+        wordPtr = word;      // init pointer to the word
+        while (count < strlen(wordPtr))
+        { // while we didn't get to substring that equals to the word
+            if (*textEPtr == ' ' && !strlen(currString))
+            {
                 break;
-            } else if (*textEPtr != ' ') {
+            }
+            else if (*textEPtr != ' ')
+            {
                 count++;
             }
-            strncat(currString, textEPtr, 1); //appended only one char
+            strncat(currString, textEPtr, 1); // appended only one char
             textEPtr++;
 
-            if (strlen(wordPtr) == count) {
-                if (checkAn(currString, wordPtr)) {
+            if (strlen(wordPtr) == count)
+            {
+                if (checkAn(currString, wordPtr))
+                {
                     strcat(ans, currString);
                     ans[strlen(ans)] = '~';
                     count = 0;
                 }
             }
-
         }
         textSPtr++;
     }
@@ -165,15 +420,3 @@ void Anagram(char word[], char text[]) {
     ans[size - 1] = '\0';
     printf("Anagram Sequences: %s", ans);
 }
-
-
-
-
-
-
-
-
-
-
-
-

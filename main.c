@@ -5,48 +5,37 @@
 #define WORD 30
 /**
  * first we need to scan word < 30 until we see
- * @return
  */
-int main(){
+int main()
+{
 
     char word[WORD];
     char text[TXT];
-    char word_temp[WORD];
-    char text_temp[TXT];
 
-    char c = getchar();
+    char c;
     int i = 0;
-
-    while (c != '\n' && c != ' ' && c != '\t' && c != EOF && i != 30) {
+    while (c != '\n' && c != ' ' && c != '\t' && i < 30)
+    {
+        scanf("%c", &c);
         word[i] = c;
         i++;
-        c = getchar();
     }
-    word[i] = '\0';
+    word[i-1] = '\0';
 
-    c = getchar();
     i = 0;
-    while ( c != '~' && i !=1024){
-       text[i] = c;
-       i++;
-       c = getchar();
+    while (c != '~' && i < 1024)
+    {
+        scanf("%c", &c);
+        text[i] = c;
+        i++;
     }
-    text[i] = '\0';
+    text[i-1] = '\0';
 
-
-
-    strcpy(word_temp, word);
-    strcpy(text_temp, text);
-    Gematria(word_temp, text_temp);
+    
+    Gematria(word, text);
     printf("\n");
-    strcpy(word_temp, word);
-    strcpy(text_temp, text);
-    Atbash(word_temp, text_temp);
+    Atbash(word, text);
     printf("\n");
-    strcpy(word_temp, word);
-    strcpy(text_temp, text);
-    Anagram (word_temp, text_temp);
-
+    Anagram(word, text);
     return 0;
 }
-
