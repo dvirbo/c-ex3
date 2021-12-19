@@ -36,6 +36,7 @@ int main()
     printf("\n");
     Atbash(word, text);
     printf("\n");
+    
     Anagram(word, text);
     return 0;
 }

@@ -354,18 +354,18 @@ int checkAn(char currString[], char word[])
 {
     int appearance[127];
     memset(appearance, 0, sizeof(appearance));
-//    int loc;
+        int loc;
     for (int i = 0; currString[i] != '\0'; i++)
     {
         if (currString[i] != ' ')
         {
-       //     loc = (int)(currString + i);
-            appearance[(int)*(currString + i)] += 1;
+                 loc = (int)*(currString + i);
+            appearance[loc] ++;
         }
         if (word[i] != ' ' && strlen(word) > i)
         {
-          //  loc = (int)(word + i);
-            appearance[(int)*(word + i)] -= 1;
+              loc = (int)*(word + i);
+            appearance[loc]--;
         }
     }
     for (int i = 0; i < 127; i++)
@@ -378,41 +378,42 @@ int checkAn(char currString[], char word[])
     return 1;
 }
 
-void Anagram(char word[], char text[]){
-     printf("Anagram Sequences: ");
+void Anagram(char word[], char text[])
+{
+    printf("Anagram Sequences: ");
     int textlen = strlen(text);
-    char sub[textlen];
-    strcpy(sub,text);
+    char copy[textlen];
+    strcpy(copy, text);
 
-    int s =0,subLen=strlen(sub),tilda = 0;
+    int tilda = 0;
     for (int i = 0; i < textlen; i++)
     {
-        s=0;
-        char temp[textlen];
-        for (int g = 0; g < textlen ; g++)
+        int pSub = 0;
+        char sub[textlen];
+        for (int t = 0; t < textlen; t++)
         {
-            temp[g] = 0;
+            sub[t] = 0;
         }
-        for (int j = 0; j < strlen(sub); j++)
+        for (int j = 0; j < strlen(copy); j++)
         {
-            if(sub[0]!=' '&& sub[0]!='\n'&&sub[0]!='\t'){
-            char f;
-            f = sub[j];
-            temp[s++] = f;
-            if (checkAn(word,temp)==1) 
+            if (copy[0] != ' ')
             {
-                if(tilda != 0)
-                    printf("~%s",temp);
-                else
+                char c = copy[j];
+                sub[pSub] = c;
+                pSub++;
+                if (checkAn(word, sub))
                 {
-                    tilda = 1;
-                    printf("%s",temp);
+                    if (tilda)
+                        printf("~%s", sub);
+                    else
+                    {
+                        tilda = 1;
+                        printf("%s", sub);
+                    }
+                    break;
                 }
-                break;
             }
-            }
-        }   
-        memmove(&sub[0],&sub[1],strlen(sub));
-    
+        }
+        memmove(&copy[0], &copy[1], strlen(copy));
     }
 }
